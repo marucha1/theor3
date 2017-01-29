@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang = "en">
+
+	<!La idea es que cuando uno completa el formulario de conversión, s recogen los datos, se forma un JavaScript personalizado con los parámetros adecuados y se coloca al final de esta página; que no es más que el fondo con una barra de cargado. Modifico el método actualizarProgreso del Firefogg para que cuando este termine, reescriba por completo el documento mostrando lo que sería paginaExito, así metemos dos páginas en una.>
+
+<head>
+	<title>Theor</title>
+	<meta charset="UTF-8">
+	<meta name= "viewport" content = "width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link href="https://fonts.googleapis.com/css?family=Cinzel|Cinzel+Decorative|Cormorant+SC|Orbitron" rel="stylesheet"> 
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.jpg">
+	<link rel="stylesheet" type="text/css" href="estilo.css">
+	<script type="text/javascript" src = "JQuery.js"></script>
+</head>
+
+<body>
+
+	<div id = "particles-js"></div>
+
+	<div class = "texto">
+		<h2>Theor</h2>
+		<br>
+		<p>El otro software de conversión</p>
+	</div>
+
+	<div id = "BB-8" class = "parpadea mensComp"><p>Codificación Completada</p></div>
+
+	<div class = "contenedor principal">
+		<progress id = "progressbar" value = "0" max = "10000"></progress>
+
+		<form id = "formI" class = "Cbotones" action= "" method = "POST">
+			<input type = "submit" value = "Volver" id = "btnInv1" class = "botones">
+		</form>
+
+		<form id = "formII" class = "Cbotones" action= "" method = "POST">
+			<input type = "submit" value = "Cerrar Sesión" id = "btnInv1" class = "botones">
+		</form>
+	</div>
+	<script type="text/javascript">
+	(function () {
+		/*Esto está demostrado que funciona que esconde los contenedores*/
+		function esconde () {
+			var mensaje = document.getElementById("BB-8");
+			mensaje.style.display='none';
+
+			var formularioI = document.getElementById("formI");
+			formularioI.style.display='none';
+
+			var formularioII = document.getElementById("formII");
+			formularioII.style.display='none';
+		}
+		esconde();
+		
+	}())
+	</script>
+	<script type="text/javascript">
+	if(typeof(Firefogg) == 'undefined') {
+  	alert('You dont have Firefogg, please go to http://firefogg.org to install it');
+ 	window.open('http://firefogg.org');
+	}
+
+	var ogg = new Firefogg();
+
+	if(ogg.selectVideo()) {
+  		var options = JSON.stringify({'width': 1});
+  		ogg.encode(options,
+            function(result, file) {
+                result = JSON.parse(result);
+                update_progress(result.progress, result.state);
+
+
+                var xhr = new XMLHttpRequest();
+                xhr.addEventListener('progress', function(e) {
+                    var progress = e.position || e.loaded, total = e.totalSize || e.total;
+                    update_progress(progress, 'uploading');
+                }, false);
+                xhr.open('post', uploadUrl, true);
+                xhr.send(file)
+            },
+            function(progress) {
+                progress = JSON.parse(progress);
+                update_progress(progress.progress, progress.state);
+            }
+    	);
+	}
+
+
+	function update_progress(progress, text) {
+    	var progressbar = document.getElementById('progressbar');
+    	var relleno = parseInt(progress*10000);
+    	progressbar.setAttribute("value",relleno);
+    	if (relleno == 10000) {
+      	muestra();
+    	}
+	}
+
+	function muestra () {
+			var mensaje = document.getElementById("BB-8");
+			mensaje.style.display='block';
+
+			var formularioI = document.getElementById("formI");
+			formularioI.style.display='block';
+
+			var formularioII = document.getElementById("formII");
+			formularioII.style.display='block';
+		}
+	</script>
+	<script type="text/javascript" src = "particles.js"></script>
+	<script type="text/javascript" src = "configuracion.js"></script>
+
+</body>
+</html>
